@@ -1,8 +1,8 @@
 module.exports = {
     dbConfig: {
       host: "localhost",
-      user: "test", // Update as needed
-      password: "Comp4537!", // Update as needed
+      user: "root", // Update as needed
+      password: "159753Vw!", // Update as needed
       database: "lab5",
     },
   };
