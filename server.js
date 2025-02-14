@@ -46,15 +46,15 @@ class RequestHandler {
   }
 
   handleRequest(req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
+    // Enable CORS for all incoming requests
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Allow requests from all origins
     res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); // Allow these methods
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
 
     // Handle preflight OPTIONS request
     if (req.method === "OPTIONS") {
-      res.writeHead(200, {
-        "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-      });
+      res.writeHead(200);
       return res.end();
     }
 
