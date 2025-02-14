@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/victoorwong/COMP4537Lab5/issues"
   },
-  "homepage": "https://github.com/victoorwong/COMP4537Lab5#readme"
+  "homepage": "https://github.com/victoorwong/COMP4537Lab5#readme",
+  "dependencies": {
+    "mysql2": "^3.12.0"
+  }
 }
