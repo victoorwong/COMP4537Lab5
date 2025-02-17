@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/victoorwong/COMP4537Lab5#readme",
   "dependencies": {
+    "dotenv": "^16.4.7",
     "mysql2": "^3.12.0"
   }
 }

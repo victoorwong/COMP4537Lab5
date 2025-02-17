@@ -2,13 +2,14 @@ const http = require("http");
 const mysql = require("mysql2");
 const url = require("url");
 const { dbConfig } = require("./config/config");
+const strings = require("./lang/en/strings");
 
 class DatabaseManager {
   constructor(config) {
     this.connection = mysql.createConnection(config);
     this.connection.connect((err) => {
       if (err) throw err;
-      console.log("Connected to MySQL");
+      console.log(strings.mysqlConnectionSuccess); 
       this.createPatientTable();
     });
   }
@@ -22,7 +23,7 @@ class DatabaseManager {
 
     this.connection.query(createTableQuery, (err) => {
       if (err) throw err;
-      console.log("Patient table is ready");
+      console.log(strings.patientTableReady); 
     });
   }
 
@@ -46,8 +47,7 @@ class RequestHandler {
   }
 
   handleRequest(req, res) {
-    // Enable CORS for all incoming requests
-    res.setHeader("Access-Control-Allow-Origin", "*"); // Allow requests from all origins
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); // Allow these methods
     res.setHeader(
@@ -55,7 +55,6 @@ class RequestHandler {
       "Content-Type, Authorization"
     ); // Allow these headers
 
-    // Handle preflight OPTIONS request
     if (req.method === "OPTIONS") {
       res.writeHead(200);
       return res.end();
@@ -67,7 +66,7 @@ class RequestHandler {
       this.handleQuery(req, res);
     } else {
       res.writeHead(404);
-      res.end(JSON.stringify({ error: "Invalid request" }));
+      res.end(JSON.stringify({ [strings.error]: strings.invalidRequest }));
     }
   }
 
@@ -117,7 +116,7 @@ class RequestHandler {
         }
       } catch (error) {
         res.writeHead(400);
-        res.end(JSON.stringify({ error: "Invalid JSON" }));
+        res.end(JSON.stringify({ [strings.error]: strings.invalidJson }));
       }
     });
   }
@@ -126,15 +125,15 @@ class RequestHandler {
     const queryObject = url.parse(req.url, true).query;
     const sql = queryObject.sql;
 
-    if (!sql || !sql.toUpperCase().startsWith("SELECT")) {
+    if (!sql || (!sql.toUpperCase().startsWith("SELECT") && !sql.toUpperCase().startsWith("INSERT"))) {
       res.writeHead(400);
-      return res.end(JSON.stringify({ error: "Only SELECT queries allowed" }));
+      return res.end(JSON.stringify({ [strings.error]: strings.onlySelectInsertAllowed }));
     }
 
     this.databaseManager.executeQuery(sql, (err, result) => {
       if (err) {
         res.writeHead(500);
-        res.end(JSON.stringify({ error: err.message }));
+        res.end(JSON.stringify({ [strings.error]: err.message }));
       } else {
         res.end(JSON.stringify(result));
       }
@@ -164,5 +163,4 @@ const databaseManager = new DatabaseManager(dbConfig); // Use the config from th
 const requestHandler = new RequestHandler(databaseManager);
 const server = new Server(3000, requestHandler);
 
-// Start the server
 server.start();
