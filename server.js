@@ -46,13 +46,11 @@ class RequestHandler {
   }
 
   handleRequest(req, res) {
-  
-    res.setHeader("Access-Control-Allow-Origin", "*"); 
+    res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
- 
     if (req.method === "OPTIONS") {
       res.writeHead(200);
       return res.end();
@@ -95,9 +93,9 @@ class RequestHandler {
     const queryObject = url.parse(req.url, true).query;
     const sql = queryObject.sql;
 
-    if (!sql || !sql.toUpperCase().startsWith("SELECT")) {
+    if (!sql || (!sql.toUpperCase().startsWith("SELECT") && !sql.toUpperCase().startsWith("INSERT"))) {
       res.writeHead(400);
-      return res.end(JSON.stringify({ error: "Only SELECT queries allowed" }));
+      return res.end(JSON.stringify({ error: "Only SELECT and INSERT queries allowed" }));
     }
 
     this.databaseManager.executeQuery(sql, (err, result) => {
@@ -128,7 +126,7 @@ class Server {
   }
 }
 
-const databaseManager = new DatabaseManager(dbConfig); 
+const databaseManager = new DatabaseManager(dbConfig);
 const requestHandler = new RequestHandler(databaseManager);
 const server = new Server(3000, requestHandler);
 
