@@ -1,12 +1,12 @@
 require('dotenv').config();
 
 const dbPassword = process.env.DB_PASSWORD;
-const sslMode = process.env.SSL_MODE || 'DISABLED';  // Default to 'DISABLED' if not set
+const sslMode = process.env.SSL_MODE || 'DISABLED';  
 
-// Configure SSL based on the SSL_MODE value from .env
+
 const sslConfig = sslMode === 'REQUIRED' 
   ? { rejectUnauthorized: false } 
-  : false;  // Disable SSL if SSL_MODE is not 'REQUIRED'
+  : false;  
 
 module.exports = {
   dbConfig: {
@@ -15,6 +15,6 @@ module.exports = {
     password: dbPassword,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    ssl: sslConfig,  // Apply the SSL configuration
+    ssl: sslConfig,  
   },
 };

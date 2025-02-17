@@ -46,13 +46,13 @@ class RequestHandler {
   }
 
   handleRequest(req, res) {
-    // Enable CORS for all incoming requests
-    res.setHeader("Access-Control-Allow-Origin", "*"); // Allow requests from all origins
+  
+    res.setHeader("Access-Control-Allow-Origin", "*"); 
     res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); // Allow these methods
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); // Allow these headers
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-    // Handle preflight OPTIONS request
+ 
     if (req.method === "OPTIONS") {
       res.writeHead(200);
       return res.end();
@@ -128,10 +128,8 @@ class Server {
   }
 }
 
-// Instantiate classes
-const databaseManager = new DatabaseManager(dbConfig);  // Use the config from the config file
+const databaseManager = new DatabaseManager(dbConfig); 
 const requestHandler = new RequestHandler(databaseManager);
 const server = new Server(3000, requestHandler);
 
-// Start the server
 server.start();
