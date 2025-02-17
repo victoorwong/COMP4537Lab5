@@ -82,7 +82,6 @@ class RequestHandler {
         const parsedBody = JSON.parse(body);
 
         if (parsedBody.query) {
-          // ✅ Case 1: Direct SQL Query
           if (!parsedBody.query.toUpperCase().startsWith("INSERT")) {
             res.writeHead(400);
             return res.end(
@@ -100,7 +99,6 @@ class RequestHandler {
             );
           });
         } else if (Array.isArray(parsedBody.data)) {
-          // ✅ Case 2: JSON Data Array
           this.databaseManager.insertData(parsedBody.data, (err, result) => {
             if (err) {
               res.writeHead(500);
