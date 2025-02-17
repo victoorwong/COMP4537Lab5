@@ -2,13 +2,14 @@ const http = require("http");
 const mysql = require("mysql2");
 const url = require("url");
 const { dbConfig } = require("./config/config");
+const strings = require("./lang/en/strings");
 
 class DatabaseManager {
   constructor(config) {
     this.connection = mysql.createConnection(config);
     this.connection.connect((err) => {
       if (err) throw err;
-      console.log("Connected to MySQL");
+      console.log(strings.mysqlConnectionSuccess); 
       this.createPatientTable();
     });
   }
@@ -22,7 +23,7 @@ class DatabaseManager {
 
     this.connection.query(createTableQuery, (err) => {
       if (err) throw err;
-      console.log("Patient table is ready");
+      console.log(strings.patientTableReady); 
     });
   }
 
@@ -62,7 +63,7 @@ class RequestHandler {
       this.handleQuery(req, res);
     } else {
       res.writeHead(404);
-      res.end(JSON.stringify({ error: "Invalid request" }));
+      res.end(JSON.stringify({ [strings.error]: strings.invalidRequest }));
     }
   }
 
@@ -77,14 +78,14 @@ class RequestHandler {
         this.databaseManager.insertData(data, (err, result) => {
           if (err) {
             res.writeHead(500);
-            res.end(JSON.stringify({ error: err.message }));
+            res.end(JSON.stringify({ [strings.error]: err.message }));
           } else {
-            res.end(JSON.stringify({ success: true, inserted: result.affectedRows }));
+            res.end(JSON.stringify({ [strings.success]: true, [strings.inserted]: result.affectedRows }));
           }
         });
       } catch (error) {
         res.writeHead(400);
-        res.end(JSON.stringify({ error: "Invalid JSON" }));
+        res.end(JSON.stringify({ [strings.error]: strings.invalidJson }));
       }
     });
   }
@@ -95,13 +96,13 @@ class RequestHandler {
 
     if (!sql || (!sql.toUpperCase().startsWith("SELECT") && !sql.toUpperCase().startsWith("INSERT"))) {
       res.writeHead(400);
-      return res.end(JSON.stringify({ error: "Only SELECT and INSERT queries allowed" }));
+      return res.end(JSON.stringify({ [strings.error]: strings.onlySelectInsertAllowed }));
     }
 
     this.databaseManager.executeQuery(sql, (err, result) => {
       if (err) {
         res.writeHead(500);
-        res.end(JSON.stringify({ error: err.message }));
+        res.end(JSON.stringify({ [strings.error]: err.message }));
       } else {
         res.end(JSON.stringify(result));
       }
