@@ -34,8 +34,6 @@ class DatabaseManager {
       if (err) return callback(err, null);
   
       if (result.length === 0) {
-        console.log("Patient table missing. Recreating...");
-  
         this.createPatientTable();
       }
   
@@ -62,11 +60,11 @@ class RequestHandler {
   handleRequest(req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); // Allow these methods
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS"); 
     res.setHeader(
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization"
-    ); // Allow these headers
+    ); 
 
     if (req.method === "OPTIONS") {
       res.writeHead(200);
