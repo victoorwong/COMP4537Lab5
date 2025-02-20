@@ -9,7 +9,7 @@ class DatabaseManager {
     this.connection = mysql.createConnection(config);
     this.connection.connect((err) => {
       if (err) throw err;
-      console.log(strings.mysqlConnectionSuccess); 
+      console.log(strings.mysqlConnectionSuccess);
       this.createPatientTable();
     });
   }
@@ -23,16 +23,29 @@ class DatabaseManager {
 
     this.connection.query(createTableQuery, (err) => {
       if (err) throw err;
-      console.log(strings.patientTableReady); 
+      console.log(strings.patientTableReady);
     });
   }
 
   insertData(data, callback) {
-    const sql = "INSERT INTO patient (name, birth_date) VALUES ?";
-    this.connection.query(sql, [data], (err, result) => {
-      callback(err, result);
+    const checkTableQuery = "SHOW TABLES LIKE 'patient'";
+  
+    this.connection.query(checkTableQuery, (err, result) => {
+      if (err) return callback(err, null);
+  
+      if (result.length === 0) {
+        console.log("Patient table missing. Recreating...");
+  
+        this.createPatientTable();
+      }
+  
+      const sql = "INSERT INTO patient (name, birth_date) VALUES ?";
+      this.connection.query(sql, [data], (err, result) => {
+        callback(err, result);
+      });
     });
   }
+  
 
   executeQuery(query, callback) {
     this.connection.query(query, (err, result) => {
@@ -156,8 +169,8 @@ class Server {
   }
 }
 
-// Instantiate classes
-const databaseManager = new DatabaseManager(dbConfig); // Use the config from the config file
+
+const databaseManager = new DatabaseManager(dbConfig); 
 const requestHandler = new RequestHandler(databaseManager);
 const server = new Server(3000, requestHandler);
 
